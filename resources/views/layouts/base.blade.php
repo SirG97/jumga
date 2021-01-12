@@ -124,7 +124,6 @@
             <div class="header-page-title mr-auto">
                 <div class="icon-block blue-bg">
                     @yield('icon')
-
                 </div>
                 <span class="header-page-title-text">@yield('title')</span>
             </div>

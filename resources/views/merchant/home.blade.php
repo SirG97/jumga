@@ -1,5 +1,8 @@
 @extends('merchant.layouts.base')
-
+@section('icon')
+    <i class="fa fa-fw fas fa-tachometer-alt"></i>
+@endsection
+@section('title', 'Dashboard')
 @section('content')
 <div class="container">
     <div class="row justify-content-center">

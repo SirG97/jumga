@@ -40,7 +40,7 @@
 <!--                             <i class="fas fa-fw fa-shield-alt self-center"></i>-->
                                 <img src="/img/logo.svg" alt="">
                             </span>
-                                <span class="company_text font-bold text-white text-xl">Jumga :: Merchant</span>
+                                <span class="company_text font-bold text-white ">Jumga::Merchant</span>
                             </a>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                         </div>
 
                         <div class="nav_item prelative">
-                            <a href="/user/history" class="nav_link nav_flex nav_link_purple">
+                            <a href="/merchant/product/add" class="nav_link nav_flex nav_link_purple">
                             <span class="nav_link_icon">
                              <i class="fas fa-fw fa-plus"></i>
                             </span>
@@ -142,9 +142,10 @@
         <header class="d-flex shadow-sm">
             <div class="header-page-title mr-auto">
                 <div class="icon-block blue-bg">
-                    <i class="fa fa-fw fas fa-history"></i>
+                    @yield('icon')
+
                 </div>
-                <span class="header-page-title-text">Dashboard</span>
+                <span class="header-page-title-text">@yield('title')</span>
             </div>
 
             <div class="header-nav">

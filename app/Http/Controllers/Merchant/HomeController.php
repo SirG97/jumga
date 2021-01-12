@@ -9,6 +9,8 @@ class HomeController extends Controller
     /**
      * Create a new controller instance.
      *
+     * This controller handles the dashboard, profile and changing of password.
+     * Not really necessary for the completion of the challenge
      * @return void
      */
     public function __construct()
@@ -23,5 +25,17 @@ class HomeController extends Controller
      */
     public function index() {
         return view('merchant.home');
+    }
+
+    public function getProfile() {
+        return view('merchant.profile');
+    }
+
+    public function notifications() {
+        return view('merchant.notifications');
+    }
+
+    public function changePassword() {
+        return view('merchant.changepassword');
     }
 }
