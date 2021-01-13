@@ -145,8 +145,8 @@
                 <li class="nav-item px-3 mx-auto {{ request()->is('categories') ? 'active' : '' }}">
                     <a class="nav-link" href="/categories">Categories</a>
                 </li>
-                <li class="nav-item px-3 mx-auto {{ request()->is('merchant/create') ? 'active' : '' }}">
-                    <a href="https://wa.me/message/WF7XP2IZZIY4N1" class="nav-link">Sell on Jumga</a>
+                <li class="nav-item px-3 mx-auto {{ request()->is('merchant/register') ? 'active' : '' }}">
+                    <a href="/merchant/register" class="nav-link">Sell on Jumga</a>
                 </li>
 
             </ul>
