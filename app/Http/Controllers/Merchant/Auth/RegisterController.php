@@ -29,7 +29,8 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/merchant/dashboard';
+    protected $redirectTo = '/merchant/approve';
+
 
     /**
      * Create a new controller instance.
@@ -52,7 +53,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'biz_name' => ['required', 'string', 'max:255', 'unique:merchants'],
+            'business_name' => ['required', 'string', 'max:255', 'unique:merchants'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:merchants'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -70,7 +71,7 @@ class RegisterController extends Controller
         return Merchant::create([
             'name' => $data['name'],
             'merchant_id' => uniqid(),
-            'biz_name' => $data['biz_name'],
+            'business_name' => $data['business_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);

@@ -17,7 +17,17 @@
                             </div>
                         @endif
 
-                        You are logged in!
+                            @if (session('error'))
+                                <div class="alert alert-danger" role="alert">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+
+                        @if(Auth::guard('merchant')->user()->status === 1)
+                            <p>You have been approved</p>
+                            @else
+                                <a href="{{url('/merchant/approve/proceed')}}" class="btn btn-primary">Pay $20 approval fee</a>
+                        @endif
                     </div>
                 </div>
             </div>
