@@ -25,6 +25,10 @@ class IndexController extends Controller
         return view('products');
     }
 
+    public function viewCart(){
+        return view('cart');
+    }
+
     public function getMerchants(){
         return view('products');
     }

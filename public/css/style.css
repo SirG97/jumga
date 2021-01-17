@@ -595,3 +595,16 @@ trending .carousel .carousel-item .btn {
     width: 100%;
     margin-bottom: 26px;
 }
+
+.update-btn{
+    color: white;
+    padding: 0;
+    box-sizing: border-box;
+    height: 20px;
+    width: 20px;
+    background-color: #3490dc;
+}
+
+.remove{
+    cursor: pointer;
+}

@@ -121,8 +121,8 @@
 {{--                <div class="category">--}}
 {{--                    <div class="category-header">Beauty</div>--}}
 {{--                    <div class="category-img">--}}
-{{--                        <img src="{{ asset('/img/beautygad.png')}}" alt="">--}}
-{{--                    </div>--}}
+    {{--                        <img src="{{ asset('/img/beautygad.png')}}" alt="">--}}
+    {{--                    </div>--}}
 {{--                </div>--}}
 {{--            </div>--}}
 {{--        </div>--}}

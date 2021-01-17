@@ -40,7 +40,7 @@ Route::get('/user/notifications', [HomeController::class, 'notifications'])->nam
 Route::get('/user/changepassword', [HomeController::class, 'changePassword'])->name('changePassword');
 
 
-Route::get('/cart', [IndexController::class, 'reviewOrder']);
+Route::get('/cart', [IndexController::class, 'viewCart']);
 Route::post('/cart/add', [CartController::class, 'addItem']);
 Route::post('/cart/update', [CartController::class, 'updateQuantity']);
 Route::post('/cart/remove', [CartController::class, 'removeItem']);

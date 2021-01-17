@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -46,22 +48,34 @@ dd('We are live!');
         }
     }
 
-    public function remove(Request $request){
+    public function removeItem(Request $request){
         if(count(session()->get('cart')) <= 1){
             // Empty cart
 //            unset($_SESSION['cart']);
             session()->forget('cart');
         }else{
             // Empty particular item
-            unset($_SESSION['cart'][$request->index]);
-            sort($_SESSION['cart']);
+            $index = (int)$request->index;
+            session()->forget("cart.{$index}");
+//            session()->save();
+//            unset($_SESSION['cart'][$request->index]);
+            //Assign the cart value to a variable so that it can be sorted
+            $s = session('cart');
+            sort($s);
+            // Empty the cart and save
+            session()->forget('cart');
+
+            // Then put back the sorted cart into the session again
+            session()->put('cart', $s);
+            session()->save();
+            dd(session('cart'), session("cart.{$request->index}"), $request->index);
         }
     }
 
     public function addItem(Request $request){
 //        session()->forget('cart');
 //        session()->save();
-        dd(session('cart'));
+//        dd(session('cart'));
         if(!$request->product_id){
             return response()->json(['error' => 'Malicious Activity']);
         }
@@ -99,30 +113,30 @@ dd('We are live!');
     }
 
     public function getCartItems(Request $request){
-//        dd(session('cart'));
+
         $result = array();
         $cartTotal = 0;
         if(!session()->has('cart') || count(session()->get('cart')) < 1){
             return response()->json(['error' => 'Cart is empty', 'authenticated' => Auth::check()]);
-
         }
 
         $index = 0;
-        $vendor_id = '';
-
+        $merchant_id = '';
+        $delivery_fee = 120;
+        $totalQuantity = 0;
         foreach(session('cart') as $cartItem){
             $product_id = $cartItem['product_id'];
             $quantity = $cartItem['quantity'];
-            $item = product::where('product_id', $product_id)->first();
+            $item = Product::where('product_id', $product_id)->first();
             if(!$item){ continue; }
-
+            $totalQuantity = $totalQuantity + $quantity;
             $totalPrice = (int)$item->unit_price * $quantity;
-            $vendor_id = $item->vendor_id;
             $cartTotal = $totalPrice + $cartTotal;
             $totalPrice = number_format($totalPrice, 2);
 
             array_push($result, [
                 'product_id' => $item->product_id,
+                'merchant_id' => $item->merchant_id,
                 'name' => $item->name,
                 'image' => $item->image,
                 'unit_price' => $item->unit_price,
@@ -134,7 +148,7 @@ dd('We are live!');
         }
         $rawTotal = $cartTotal;
         $cartTotal = number_format($cartTotal, 2);
-        $delivery_fee = Vendor::where('vendor_id', $vendor_id)->first()->min_delivery;
+//        $delivery_fee = 120 * count(session('cart'));
         $grandTotal = number_format(((int)$rawTotal + (int)$delivery_fee), 2);
         $rawTotal = (int)$rawTotal + (int)$delivery_fee;
 
@@ -142,7 +156,8 @@ dd('We are live!');
             'grandTotal' => $grandTotal,
             'rawTotal' => $rawTotal,
             'cartTotal' => $cartTotal,
-            'delivery_fee' => $delivery_fee,
+            'delivery_fee' => $delivery_fee * $totalQuantity,
+            'totalQuantity' => $totalQuantity,
             'authenticated' => Auth::check()]);
 
     }
@@ -196,5 +211,6 @@ dd('We are live!');
             }
             $index++;
         }
+        return response()->json(['success' => 'Cart updated successfully']);
     }
 }
