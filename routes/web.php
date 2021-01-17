@@ -3,8 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\MerchantController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +21,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [IndexController::class, 'index']);
 
-Route::get('/products', [IndexController::class, 'getProducts']);
+Route::get('/products', [IndexController::class, 'viewProductsPage']);
+Route::get('/products/all', [IndexController::class, 'getProducts']);
 Route::get('/product/{id}', [IndexController::class, 'getProduct']);
 Route::get('/merchants', [IndexController::class, 'getMerchants']);
 Route::get('/merchants/{id}', [IndexController::class, 'getMerchant']);
@@ -38,3 +38,10 @@ Route::get('/user/items', [HomeController::class, 'getItems'])->name('savedTtems
 Route::get('/user/address', [HomeController::class, 'getAddress'])->name('address');
 Route::get('/user/notifications', [HomeController::class, 'notifications'])->name('notifications');
 Route::get('/user/changepassword', [HomeController::class, 'changePassword'])->name('changePassword');
+
+
+Route::get('/cart', [IndexController::class, 'reviewOrder']);
+Route::post('/cart/add', [CartController::class, 'addItem']);
+Route::post('/cart/update', [CartController::class, 'updateQuantity']);
+Route::post('/cart/remove', [CartController::class, 'removeItem']);
+Route::get('/items', [CartController::class, 'getCartItems']);

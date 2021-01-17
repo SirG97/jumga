@@ -46,6 +46,7 @@ Route::get('/changepassword', [HomeController::class, 'changePassword'])->name('
 Route::get('/inventory', [ProductController::class, 'inventory'])->name('home');
 Route::get('/sales', [ProductController::class, 'sales'])->name('sales');
 Route::get('/product/add', [ProductController::class, 'addProduct'])->name('addProduct');
+Route::post('/product/create', [ProductController::class, 'createProduct'])->name('createProduct');
 
 Route::get('/approve', [ApprovalController::class, 'approve'])->name('approve');
 Route::get('/approve/proceed', [ApprovalController::class, 'proceedToApprovalPayment'])->name('approval');

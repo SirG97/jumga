@@ -584,3 +584,14 @@ trending .carousel .carousel-item .btn {
     padding-bottom: 20px;
     margin-top: 80px;
 }
+
+.custom-panel {
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12);
+    border-width: 1px;
+    border-style: solid;
+    border-color: #fff;
+    width: 100%;
+    margin-bottom: 26px;
+}

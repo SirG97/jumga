@@ -50,7 +50,7 @@ class ApprovalController extends Controller
     }
 
     /*
-     *
+     * Function to initialize payment
      */
     public function initializeApprovalPayment($tx_ref, $name, $email, $amount, $currency){
         $curl = curl_init();
