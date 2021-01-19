@@ -112,6 +112,15 @@
                         </div>
 
                         <div class="nav_item prelative">
+                            <a href="/merchant/account" class="nav_link nav_flex nav_link_purple">
+                            <span class="nav_link_icon">
+                             <i class="fas fa-credit-card"></i>
+                            </span>
+                                <span class="nav_link_text">{{__('Add Account')}}</span>
+                            </a>
+                        </div>
+
+                        <div class="nav_item prelative">
                             <a href="/merchant/changepassword" class="nav_link nav_flex nav_link_purple">
                             <span class="nav_link_icon">
                              <i class="fas fa-fw fa-key"></i>

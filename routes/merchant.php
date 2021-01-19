@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Merchant\ApprovalController;
+use App\Http\Controllers\Merchant\SetupController;
 use App\Http\Controllers\Merchant\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Merchant\HomeController;
@@ -48,7 +48,11 @@ Route::get('/sales', [ProductController::class, 'sales'])->name('sales');
 Route::get('/product/add', [ProductController::class, 'addProduct'])->name('addProduct');
 Route::post('/product/create', [ProductController::class, 'createProduct'])->name('createProduct');
 
-Route::get('/approve', [ApprovalController::class, 'approve'])->name('approve');
-Route::get('/approve/proceed', [ApprovalController::class, 'proceedToApprovalPayment'])->name('approval');
-Route::get('/verify', [ApprovalController::class, 'verifyApprovalPayment'])->name('verifyApproval');
+Route::get('/approve', [SetupController::class, 'approve'])->name('approve');
+Route::get('/approve/proceed', [SetupController::class, 'proceedToApprovalPayment'])->name('approval');
+Route::get('/verify', [SetupController::class, 'verifyApprovalPayment'])->name('verifyApproval');
+
+
+Route::get('/account', [SetupController::class, 'showAccountDetailsForm'])->name('accountDetailsForm');
+Route::post('/account', [SetupController::class, 'createAccount'])->name('createAccount');
 

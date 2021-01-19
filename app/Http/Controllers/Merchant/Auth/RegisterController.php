@@ -55,6 +55,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'business_name' => ['required', 'string', 'max:255', 'unique:merchants'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:merchants'],
+            'country' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -73,6 +74,7 @@ class RegisterController extends Controller
             'merchant_id' => uniqid(),
             'business_name' => $data['business_name'],
             'email' => $data['email'],
+            'country' => $data['country'],
             'password' => Hash::make($data['password']),
         ]);
     }

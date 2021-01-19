@@ -40,6 +40,22 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="country" class="col-md-4 col-form-label text-md-right">{{ __('Country') }}</label>
+
+                            <div class="col-md-6">
+                                {{--                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">--}}
+                                <select class="custom-select" name="country" id="country" required>
+                                    <option value="">Select Country</option>
+                                    <option value="NG" {{ old('country') == 'NG' ? 'selected="selected"' : '' }}>Nigeria</option>
+                                    {{--                                        <option value="UK">United Kingdom</option>--}}
+                                    <option value="GH" {{ old('country') == 'GH' ? 'selected="selected"' : '' }}>Ghana</option>
+                                    <option value="KE" {{ old('country') == 'KE' ? 'selected="selected"' : '' }}>Kenya</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
                             <div class="col-md-6">

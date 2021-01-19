@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RiderController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
@@ -28,3 +29,13 @@ Route::post('password/confirm', 'Auth\ConfirmPasswordController@confirm');
 // Route::get('email/verify', 'Auth\VerificationController@show')->name('verification.notice');
 // Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
 // Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+
+
+Route::get('/rider/add', [RiderController::class, 'showRiderForm']);
+Route::post('/rider/banks', [RiderController::class, 'getBanksFromRiderCountry']);
+Route::post('/rider/account/resolve', [RiderController::class, 'resolveAccountNumber']);
+Route::post('/rider/create', [RiderController::class, 'createAccount'])->name('createRider');
+Route::post('/riders', [RiderController::class, 'addItem']);
+Route::post('/sales', [HomeController::class, 'updateQuantity']);
+Route::post('/merchants', [HomeController::class, 'removeItem']);
+Route::get('/approvals', [HomeController::class, 'getCartItems']);

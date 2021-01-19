@@ -1,8 +1,8 @@
-@extends('merchant.layouts.base')
+@extends('admin.layouts.base')
 @section('icon')
-    <i class="fa fa-fw fas fa-plus"></i>
+    <i class="fa fa-fw fas fa-motorcycle"></i>
 @endsection
-@section('title', 'New Product')
+@section('title', 'Riders')
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -38,9 +38,9 @@
                                 <div class="form-row p-details-form">
                                     <div class="col-md-12 mb-3">
                                         <select class="custom-select" name="category" id="category" required>
-                                                <option value="clothing">Clothing</option>
-                                                <option value="gadget">Gadget</option>
-                                                <option value="beauty">Beauty</option>
+                                            <option value="clothing">Clothing</option>
+                                            <option value="gadget">Gadget</option>
+                                            <option value="beauty">Beauty</option>
                                         </select>
                                     </div>
 
@@ -78,5 +78,6 @@
         </div>
     </div>
 @endsection
+
 
 
