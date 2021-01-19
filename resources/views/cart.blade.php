@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container" id="root" style="margin-top: 20px;" data-token="">
+    <div class="container" id="root" style="margin-top: 20px;" data-token="" >
         <div class="row">
             <div class="col-md-12">
                 <div class="revieworder-card mb-5">
@@ -46,6 +46,42 @@
                                         </table>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="revieworder-card">
+                    <div class="card">
+                        <h5 class="card-header">Payment Summary</h5>
+                        <div class="card-body">
+
+                            <div class=" d-flex justify-content-end flex-column">
+                                <div class="row">
+                                    <div class="offset-md-8"></div>
+                                    <div class="col-md-4">
+                                        <div class="review-cart p-3 drop-shadow">
+                                            <div class="subtotal-container d-flex justify-content-between">
+                                                <div class="total-title">Subtotal</div>
+                                                {{--                                                        @{{ cartTotal }}--}}
+                                                <div id="subtotal">&#8358;@{{ cartTotal }}</div>
+                                            </div>
+                                            <div class="del-container d-flex justify-content-between">
+                                                <div class="total-title">Delivery fee</div>
+                                                <div id="delivery">&#8358;@{{ delivery_fee }}.00</div>
+                                            </div>
+                                            <div class="grand-container d-flex justify-content-between">
+                                                <div class="total-title grand-title font-weight-bold">Grand total</div>
+                                                <div id="grand" class="font-weight-bold total-value">&#8358;@{{ grandTotal }}</div>
+                                            </div>
+
+                                            <a href="/checkout" v-if="authenticated" :disabled="disableCheckoutBtn" class="btn btn-block theme-bg input-radius btn-primary mt-3">Checkout</a>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

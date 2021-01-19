@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center my-5">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Register') }}</div>
@@ -36,6 +36,22 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="country" class="col-md-4 col-form-label text-md-right">{{ __('Country') }}</label>
+
+                            <div class="col-md-6">
+                                {{--                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">--}}
+                                <select class="custom-select" name="country" id="country" required>
+                                    <option value="">Select Country</option>
+                                    <option value="NG" {{ old('country') == 'NG' ? 'selected="selected"' : '' }}>Nigeria</option>
+                                    <option value="UK" {{ old('country') == 'UK' ? 'selected="selected"' : '' }}>United Kingdom</option>
+                                    <option value="GH" {{ old('country') == 'GH' ? 'selected="selected"' : '' }}>Ghana</option>
+                                    <option value="KE" {{ old('country') == 'KE' ? 'selected="selected"' : '' }}>Kenya</option>
+                                </select>
+
                             </div>
                         </div>
 

@@ -138,4 +138,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
+
+    const type = $("#type");
+    type.on('change', () =>{
+        if(type.val() === 'mobile_money_ghana'){
+
+            $("#network_option").toggleClass('hideit');
+            $("#phone_option").toggleClass('hideit');
+        }
+
+        if(type.val() === 'mpesa'){
+            $("#network_option").toggleClass('hideit');
+            $("#phone_option").removeClass('hideit');
+        }
+        if(type.val() === 'debit_uk_account' || type.val() === 'card'){
+            $("#network_option").addClass('hideit');
+            $("#phone_option").addClass('hideit');
+        }
+    });
+
 });

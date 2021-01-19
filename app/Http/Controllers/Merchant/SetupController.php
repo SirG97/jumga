@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
+use App\Models\Rider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Payment;
@@ -57,9 +58,7 @@ class SetupController extends Controller
 
          //  generate unique reference for the transaction.
         // get your public key from the dashboard.
-
         $redirect_url = "http://localhost:8000/merchant/verify/"; //  redirect URL after payment
-
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://api.flutterwave.com/v3/payments",
             CURLOPT_RETURNTRANSFER => true,
@@ -99,6 +98,7 @@ class SetupController extends Controller
         return redirect( $transaction->data->link);
     }
 
+
     /*
      *  Verify the payment with the flutterwave verification API
      */
@@ -133,15 +133,22 @@ class SetupController extends Controller
         if($response->status === 'success' and $response->data->tx_ref === $payment->tx_ref and
             $response->data->currency === $payment->currency and $response->data->amount === $payment->amount){
 
-            // Mark the status of the user table as paid
-            Merchant::where('merchant_id', Auth::guard('merchant')->user()->merchant_id)->update(['status' => 1]);
+            // Get rider to be assigned to the approved merchant
+            $rider = $this->assignDispatchRider();
+
+            // Mark the status of the merchant as paid
+            Merchant::where('merchant_id', Auth::guard('merchant')->user()
+                        ->merchant_id)->update(['status' => 1,
+                                                'rider_id' => $rider
+                                                ]);
 
             // Update the payment detail in our DB
             $payment->payment_type = $response->data->payment_type;
             $payment->status = $response->status;
             $payment->save();
 
-            return redirect('/merchant/approve')->with('success', 'Approval fee payment successful');
+            return redirect('/merchant/approve')->with('success', 'Approval fee payment successful. 
+              You have been assigned a dispatch rider');
 
         }
 
@@ -235,5 +242,21 @@ class SetupController extends Controller
 
             return back()->with('error', $response->message);
         }
+    }
+
+    public function assignDispatchRider(){
+        /*
+         * We'll first Check and see if there is a dispatch rider (there will always be though) in the country of the
+         * merchant, if there is, we assign him one, if not, will just assign him anyone for sake of this challenge.
+         * Then we will return the ID of the rider and assign it
+         */
+
+        $rider = Rider::where('country', Auth::guard('merchant')->user()->country)->first();
+        if(!$rider){
+            $rider = Rider::first();
+            return $rider->rider_id;
+        }
+
+        return $rider->rider_id;
     }
 }

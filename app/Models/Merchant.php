@@ -21,6 +21,14 @@ class Merchant extends Authenticatable
         'name', 'email', 'password', 'business_name', 'merchant_id', 'status', 'country'
     ];
 
+    /*
+     *  Relationships
+     */
+
+    public function Rider(){
+        return $this->hasOne(Rider::class, 'rider_id', 'rider_id');
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

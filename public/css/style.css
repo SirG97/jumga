@@ -608,3 +608,89 @@ trending .carousel .carousel-item .btn {
 .remove{
     cursor: pointer;
 }
+
+.hideit{
+    display:none;
+}
+
+.footer{
+    padding: 120px 0;
+    background-color: #000d2b;
+    color: white;
+}
+
+.footer-title{
+    font-family: Barlow, sans-serif;
+    color: #fff;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.footer-logo{
+    text-align: center;
+}
+
+.footer-social {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.footer-social ul li {
+    display: inline-block;
+    margin: 0 5px;
+    list-style-type: none;
+}
+
+.footer-social ul li a {
+    height: 50px;
+    width: 50px;
+    line-height: 50px;
+    text-align: center;
+    display: inline-block;
+    border: 2px solid whitesmoke;
+    border-radius: 50%;
+    color:#ffffff;
+}
+
+.footer-nav ul li {
+    display: inline-block;
+    margin: 0 12px;
+    list-style-type: none;
+}
+
+.footer-nav ul li a {
+    color:
+        #ffffff;
+    font-weight: 600;
+}
+
+
+.footer-link{
+    padding-left: 10px;
+    float: none;
+    display:block;
+    font-family: Barlow, sans-serif;
+    color: #fff;
+    font-size: 14px;
+    text-align: left;
+    font-weight: 500;
+}
+
+.footer-widget p{
+    padding-left: 10px;
+    float: none;
+    display:block;
+    font-family: Barlow, sans-serif;
+    color: #fff;
+    font-size: 14px;
+    text-align: left;
+    font-weight: 500;
+    line-height: 37px;
+}
+
+.social-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 25px;
+    padding: 5px;
+}

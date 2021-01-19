@@ -13,7 +13,6 @@ let app = new Vue({
             grandTotal: 0,
             delivery_fee: 0,
             message: '',
-            vendorId: $("#vid").data('id'),
             disableCheckoutBtn: true,
             authenticated: false,
         },
@@ -29,7 +28,6 @@ let app = new Vue({
                     console.log(e);
                 });
             },
-
             addToCart: (merchant,id, name, unit_price, e) =>{
                 // app.buttonLoading = !app.buttonLoading;
                 // console.log(event.target.id);
@@ -99,7 +97,6 @@ let app = new Vue({
                     $("#toast").removeClass('alert-success').addClass('alert-danger').css("display", "block").html(e);
                 });
             },
-
             updateCartView: () =>{
                 app.cartLoading = true;
                 setTimeout(function(){
@@ -132,6 +129,69 @@ let app = new Vue({
                     $("#toast").css("display", "block").html(response.data.success);
                 }).then(() =>{
                     app.updateCartView();
+                });
+            },
+            generateTxRef:  (length) => {
+                if (!length) {
+                    length = 16
+                }
+                var str = ''
+                for (var i = 1; i < length + 1; i = i + 8) {
+                    str += Math.random().toString(36).substr(2, 10)
+                }
+                return (str).substr(0, length)
+            },
+
+            checkout: () => {
+                console.log(app.rawTotal);
+
+                app.txref = app.generateTxRef();
+                console.log(app.txref);
+                console.log($("#properties").data('customer-email'));
+                console.log($("#properties").data('public-key'));
+                let x = FlutterwaveCheckout({
+                    public_key: $("#properties").data('public-key'),
+                    tx_ref: app.txref,
+                    amount: app.rawTotal,
+                    currency: "NGN",
+                    payment_options: "card, account, ussd",
+                    // redirect_url: `http://localhost:4000/verifytransaction`,
+                    customer: {
+                        email: $("#properties").data('customer-email'),
+
+                    },
+                    subaccounts: [{
+                        id: $("#properties").data('subaccount')
+                    }],
+                    callback: function (data) { // specified callback function
+                        console.log(data);
+                        let token = $('#root').data('token');
+                        console.log($('#address').val());
+                        let postData = $.param({tx_ref: data.tx_ref,
+                            transaction_id: data.transaction_id,
+                            amount: data.amount,
+                            rawTotal: app.rawTotal,
+                            status: data.status,
+                            address: $('#address').val(),
+                            token: token});
+
+                        axios.post('/verifytransaction', postData).then((response) => {
+                            $("#toast").css("display", "block").html(response.data.success);
+                            // window.location.href = "/confirmation";
+                            console.log(response.data);
+                            x.close();
+                            setTimeout((e)=>{
+                                $("#toast").css("display", "none")
+                            }, 2500);
+                        }).catch((e) => {
+                            console.log(e);
+                            $("#toast").removeClass('alert-success').addClass('alert-danger').css("display", "block").html(e);
+                        });
+                    },
+                    customizations: {
+                        title: "My store",
+                        description: "Payment for items in cart",
+                    },
                 });
             },
 

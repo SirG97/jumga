@@ -11,6 +11,7 @@
         "php": "^7.3|^8.0",
         "ext-curl": "*",
         "ext-json": "*",
+        "ashallendesign/laravel-exchange-rates": "^3.3",
         "bmatovu/multi-auth": "^10.4",
         "darryldecode/cart": "^4.2",
         "doctrine/dbal": "^3.0",
