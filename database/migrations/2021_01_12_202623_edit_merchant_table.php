@@ -13,7 +13,7 @@ class EditMerchantTable extends Migration
      */
     public function up()
     {
-        Schema::table('Merchants', function (Blueprint $table) {
+        Schema::table('merchants', function (Blueprint $table) {
             $table->string('merchant_id')->unique()->after('id');
             $table->string('business_name')->unique()->after('name');
             $table->boolean('status')->default(0)->after('remember_token');
