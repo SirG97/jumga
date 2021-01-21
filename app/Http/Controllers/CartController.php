@@ -317,25 +317,8 @@ class CartController extends Controller
 //        $payment = Payment::where('tx_ref', $tx_ref)->first();
 
 //        dd($response, $response->status, $payment);
-        if($response->status === 'success' and $response->data->tx_ref === $payment->tx_ref and
-            $response->data->currency === $payment->currency and $response->data->amount === $payment->amount){
-
-            // Get rider to be assigned to the approved merchant
-            $rider = $this->assignDispatchRider();
-
-            // Mark the status of the merchant as paid
-//            Merchant::where('merchant_id', Auth::guard('merchant')->user()
-//                ->merchant_id)->update(['status' => 1,
-//                'rider_id' => $rider
-//            ]);
-
-            // Update the payment detail in our DB
-//            $payment->payment_type = $response->data->payment_type;
-//            $payment->status = $response->status;
-//            $payment->save();
-
-            return back()->with('success', ' payment successful. 
-              You will recieve your order soon');
+        if($response->status === 'success'){
+            return back()->with('success', ' payment successful. You will recieve your order soon');
 
         }
 
