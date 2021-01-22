@@ -56,6 +56,14 @@ merchant you can now get the amount due for the dispatch rider assigned to him.
 
 After getting these details and the account ID of the merchant and dispatch rider, it is passed
 as a flat amount to the sub account array and everyone gets his pay immediately.
+
+For every payment for to a merchant I calculate the amount
+ due to him and then deduct my charge which is ```2.5%```
+before passing in the amount.
+
+For the rider I calculate and deduct ```25%``` of the charge before passing the amount 
+ to the subaccount array
+
 The logic for payments located at    ``` app/Http/Controllers/CartController.php```
 
 
