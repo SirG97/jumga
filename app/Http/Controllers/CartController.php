@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Merchant;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use AshAllenDesign\LaravelExchangeRates\Classes\ExchangeRate;
 
 class CartController extends Controller
 {
@@ -180,7 +182,6 @@ class CartController extends Controller
     }
 
     public function checkout(Request $request){
-
         $requestPayload = [
             'name' => Auth::user()->name,
             'email' => Auth::user()->email,
@@ -192,30 +193,66 @@ class CartController extends Controller
                 'name'=> Auth::user()->name,
             ]
         ];
-
-
         if($request->type === 'card' or $request->type === '' or $request->type == null){
             return $this->standardCheckout($requestPayload, $request);
         }elseif($request->type === 'debit_uk_account'){
-            $this->debitUKAccount();
+            $this->debitUKAccount($requestPayload, $request);
         }elseif($request->type === 'mpesa'){
-            $this->mpesa();
+            $this->mpesa($requestPayload, $request);
         }elseif($request->type === 'mobile_money_ghana'){
-            $this->mobileMoneyGhana();
+            $this->mobileMoneyGhana($requestPayload, $request);
         }
 
-        //  generate unique reference for the transaction.
-
-
     }
 
-    public function debitUKAccount(){
+    public function debitUKAccount($requestPayload, $request){
 
     }
-    public function mpesa(){
+    public function mpesa($requestPayload, $request){
+        $curl = curl_init();
+        // get your public key from the dashboard.
+        $rate = $this->getExchangeRate('NGN', 'KES');
+        $requestPayload['amount'] = (float)$request->total * $rate;
+        $requestPayload['currency'] = 'KES';
+        $requestPayload['country'] = 'KE';
+        $requestPayload['payment_options'] = "card,mpesa";
 
+        //Arrange the merchants and their corresponding riders to be paid and the amount for each person
+        $requestPayload['subaccounts'] = $this->arrangeSubAccounts($rate);
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.flutterwave.com/v3/payments",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode($requestPayload),
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/json",
+                "Authorization: Bearer FLWSECK_TEST-fd302c0437ac8c3dc58f5820d21182f7-X"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        if($err){
+            // there was an error contacting the rave API
+            return back()->with('error', 'Curl returned error: ' . $err);
+        }
+
+        $transaction = json_decode($response);
+
+        if($transaction->status !== 'success'){
+            return back()->with('error', 'API returned error: ' . $transaction->message);
+        }
+
+        // At this point the transaction
+        $isSuccessful = $this->verifyPayment($transaction->data->id);
+        if($isSuccessful !== true){
+            return back()->with('error', 'Payment can not be verified, contact admin or try again');
+        }
+        return back()->with('success', ' payment successful. You will recieve your order soon');
     }
-    public function mobileMoneyGhana(){
+    public function mobileMoneyGhana($requestPayload, $request){
 
     }
 
@@ -226,7 +263,7 @@ class CartController extends Controller
         $requestPayload['currency'] = 'NGN';
         $requestPayload['payment_options'] = "card,ussd,barter,mpesa,mobilemoneyghana";
 
-
+//        $rate = $this->getExchangeRate('USD', 'NGN');
         //Arrange the merchants and their corresponding riders to be paid and the amount for each person
         $requestPayload['subaccounts'] = $this->arrangeSubAccounts();
 
@@ -265,22 +302,36 @@ class CartController extends Controller
         return redirect( $transaction->data->link);
     }
 
-    public function arrangeSubAccounts(){
+    public function arrangeSubAccounts($exchangeRate = null){
         // Get the array of merchant to be sorted and price due each merchant
         $subAccounts = [];
         $sortedAccount = session('sorted');
 
+        if($exchangeRate !== null){
+
+        }
         foreach($sortedAccount as $item => $value) {
 
             $merchant = Merchant::where('merchant_id', $value['merchant_id'])->with('rider')->first();
             if($merchant !== null){
-                $merchantDetails = ['id' => $merchant->subaccount_id,
-                                    'transaction_charge' => $value['total'] - ((2.5 * $value['total']) / 100),
-                                    'transaction_charge_type' => 'flat_subaccount'];
-                $charge = $value['quantity'] * 120;
-                $riderDetails = ['id' => $merchant->rider->subaccount_id,
-                                    'transaction_charge' => $charge - ((25 * $charge) / 100),
-                                    'transaction_charge_type' => 'flat_subaccount'];
+                if($exchangeRate !== null){
+                    $merchantDetails = ['id' => $merchant->subaccount_id,
+                        'transaction_charge' => ($value['total'] - ((2.5 * $value['total']) / 100)) * $exchangeRate,
+                        'transaction_charge_type' => 'flat_subaccount'];
+                    $charge = $value['quantity'] * 120;
+                    $riderDetails = ['id' => $merchant->rider->subaccount_id,
+                        'transaction_charge' => ($charge - ((25 * $charge) / 100)) * $exchangeRate,
+                        'transaction_charge_type' => 'flat_subaccount'];
+                }else{
+                    $merchantDetails = ['id' => $merchant->subaccount_id,
+                        'transaction_charge' => $value['total'] - ((2.5 * $value['total']) / 100),
+                        'transaction_charge_type' => 'flat_subaccount'];
+                    $charge = $value['quantity'] * 120;
+                    $riderDetails = ['id' => $merchant->rider->subaccount_id,
+                        'transaction_charge' => $charge - ((25 * $charge) / 100),
+                        'transaction_charge_type' => 'flat_subaccount'];
+                }
+
                 $subAccounts[] = $merchantDetails;
                 $subAccounts[] = $riderDetails;
             }
@@ -289,14 +340,9 @@ class CartController extends Controller
         return $subAccounts;
     }
 
-
-    public function verifyApprovalPayment(Request $request){
+    public function verifyPayment($id){
         $curl = curl_init();
         // Retrieve the information passed to the redirect URL after payment
-        $status = $request->query('status');
-        $tx_ref = $request->query('tx_ref');
-        $id = $request->query('transaction_id');
-
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://api.flutterwave.com/v3/transactions/{$id}/verify",
             CURLOPT_RETURNTRANSFER => true,
@@ -316,13 +362,11 @@ class CartController extends Controller
         curl_close($curl);
 //        $payment = Payment::where('tx_ref', $tx_ref)->first();
 
-//        dd($response, $response->status, $payment);
-        if($response->status === 'success'){
-            return back()->with('success', ' payment successful. You will recieve your order soon');
-
+        if($response->status == 'success'){
+            return true;
         }
 
-        return redirect('/merchant/approve')->with('error', 'Payment can not be verified, contact admin or try again');
+        return false;
     }
 
     public function sortAccordingToMerchant($input_array, $key, $remove_key = false, $flatten_output = false){
@@ -343,6 +387,31 @@ class CartController extends Controller
         return $output_array;
 
     }
+
+    public function getExchangeRate($from, $to){
+        $curl = curl_init();
+        $query = "{$from}_{$to}";
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://free.currconv.com/api/v7/convert?q={$query}&compact=ultra&apiKey=c207595814bffca9f40e",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+//                "Content-Type: application/json",
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        $string = str_replace('\n', '', $response);
+        $string = rtrim($string, ',');
+        $string = "[" . trim($string) . "]";
+        $json = json_decode($string, true);
+        $rate = number_format($json[0][$query], 2, '.','');
+        $rate = (float)$rate;
+
+        return $rate;
+    }
+
     public function resolveLater(){
         //Sort the cart according to the number of merchants
         $result = array();

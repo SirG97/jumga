@@ -4,6 +4,16 @@
     <div class="container" id="root" style="margin-top: 20px;" data-token="" >
         <div class="row">
             <div class="col-md-12">
+                @if (session('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <div class="revieworder-card mb-5">
                     <div class="card">
                         <h5 class="card-header">Order Summary</h5>

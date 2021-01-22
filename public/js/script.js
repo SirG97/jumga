@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         if(type.val() === 'mpesa'){
-            $("#network_option").toggleClass('hideit');
+            $("#network_option").addClass('hideit');
             $("#phone_option").removeClass('hideit');
         }
         if(type.val() === 'debit_uk_account' || type.val() === 'card'){
